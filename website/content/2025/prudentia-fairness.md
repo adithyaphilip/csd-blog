@@ -54,11 +54,11 @@ that determine these outcomes?
 <br><center><figure><br> <img src="./prudentia-testbed.jpg" alt="The topology of the Prudentia testbed is depicted. Two servers from third party services are connected to two Prudentia clients via BESS, the software switch used to emulate network conditions. The software switch is shown to emulate both 8 Mbps and 50 Mbps speeds, and capable of adding j milliseconds of delay"><br> <figcaption><i>The topology of the Prudentia testbed.</i></figcaption><br></figure></center>
 
 Typical Internet testbeds run in emulated or simulated environments, where both the services generating traffic 
-and the clients consuming them exist within the testbed network. This allows complete visibility and condtrol into the 
+and the clients consuming them exist within the testbed network. This allows complete visibility and control into the 
 network path between the clients and the services. However, applying this approach to real Internet services
 would require replicating the service in a local testbed, which given their often proprietary nature is 
-error-prone and likely impossible. Alas, is all lost? Will Internet service fairness remain a mystery, revealed briefly
-only by blood scarifices to questionable mystics?
+error-prone and likely impossible. Alas, is all lost? Will Internet service fairness remain a mystery, divined 
+occasionally by blood sacrifices to questionable mystics?
 
 Not at all! Prudentia retains fidelity by using Google Chrome instances 
 (fully automated with [Selenium](https://www.selenium.dev/). Don't worry, 
@@ -67,10 +67,12 @@ hardware (2023 M2 [Mac Minis](https://www.youtube.com/watch?v=uDrjeUURSZ4)). We 
 using their official browser based clients, exactly like a real user. And to retain control over the bottleneck link,
 the most important component of the network path when it comes to fairness, we
 route all traffic to and from the clients through 
-[BESS](https://github.com/NetSys/bess), a software switch from Berkeley. We configure BESS to emulate two distinct
-link speeds:
+[BESS](https://github.com/NetSys/bess), a software switch from Berkeley. This lets us enjoy the best of both worlds: realism by accessing deployed
+services just as a user would, and the configurability provided by emulated networks by controlling the bottleneck link.
+
+We configure BESS to emulate two distinct link speeds:
 a highly-constrained setting, with a bandwidth of 8 Mbps, and a moderately-constrained
-setting, with a bandwdith of 50 Mbps, which correspond to the 10th and 50th-percentile per-country bandwidths
+setting, with a bandwidth of 50 Mbps, which correspond to the 10th and 50th-percentile per-country bandwidths
 on Ookla's SpeedTest as of 2023. BESS also sets the bottleneck queue size, and normalizes the base network path 
 delay (typically referred to as [RTT](https://en.wikipedia.org/wiki/Round-trip_delay)) for more reliable measurements across services.
 Prudentia defines the fair share of bandwidth a service
@@ -79,12 +81,13 @@ which accounts for application-limited services
 (like Netflix, which at its highest quality still consumes just 8 Mbps, 
 less than half the bandwidth available in the moderately-constrained setting).
 
-We use this unique infrastructure to test a diverse set of services spanning
+We use this unique infrastructure to test a diverse range of services spanning
 streaming video on demand, file distribution, web browsing, real-time video conferencing, and the baseline CCAs 
-NewReno, Cubic and BBR(using iPerf3), a pair at a time. The results from
+NewReno, Cubic and BBR using [iPerf3](https://iperf.fr/), a pair at a time. The results from
 Prudentia's tests are available to all at [https://internetfairness.net/](https://internetfairness.net/)&#8212;providing
-the public with an independent watchdog that quantifies which services win 
-and lose and by how much, helping both service owners and the wider community identify and correct excessively unfair outcomes.
+the public access to an independent watchdog that quantifies which services win 
+and lose and by how much. We hope this enables both service owners and the wider community identify and
+correct excessively unfair outcomes.
 
 # Internet Fairness Outcomes
 Prudentia has been running continuously for over two years, and has uncovered a wealth of insights into service interactions
@@ -118,7 +121,7 @@ measurements.
 <figcaption><i>The fair share of throughput obtained by various service when competing against Mega or YouTube. Services competing against Mega get significantly lower than their fair share, while those competing against YouTube tend to get more than their fair share.</i></figcaption>
 </figure>
 
-Prudentia was birthed due to the hypothesis that testing CCAs alone is not sufficient to predict the unfairness
+Prudentia was birthed by the hypothesis that testing CCAs alone is not sufficient to predict the unfairness
 exhibited by real Internet services. This is vindicated by its finding that services using variants of 
 the same CCA can exhibit vastly different fairness behaviors&#8212;best exemplified by YouTube, 
 and the popular file-hosting service [Mega](https://mega.com/). 
@@ -134,7 +137,7 @@ real-world fairness outcomes.
 
 ## Multiple Multi-Flow Services Exist, with Varying Fairness Impacts
 CCAs are designed to be flow-level fair, with each connection getting an equal share of throughput. It is therefore
-well-known in the fairness community that if a service opens multiple connections, it is likely to obtain more
+well-known in the Internet fairness community that if a service opens multiple connections, it is likely to obtain more
 than its fair share of throughput. What is surprising however, is that in spite of this knowledge, 
 multiple services that Prudentia tested use more than 1 concurrent connection to serve traffic, resulting in varying
 extents of unfairness.
@@ -145,7 +148,7 @@ bandwidth constrained settings. Vimeo on the other hand, surprisingly provides t
 its ABR algorithm.
 <figure>
 <center>
-<img src="./godfather.png" alt="The look how they massacared my boy meme from the Godfather, except its being said by CCA designers">
+<img src="./godfather.png" alt="The look how they massacred my boy meme from the Godfather, except it's being said by CCA designers">
 <figcaption><i>CCA designers invest significant energy into designing and testing their CCAs for flow-level fairness. Popular services using multiple flows renders these efforts an exercise in futility.</i></figcaption>
 </center>
 </figure>
@@ -207,12 +210,12 @@ As seen in the first row, NewReno obtains just 22% of its fair share when compet
 of its fair share when competing against NewReno. However, when competing against Mega, Vimeo gets more than its fair share
 of bandwidth!
 
-This suggests that there are unlikely to be "bellweather" services whose interaction can predict a service's
+This suggests that there are unlikely to be "bellwether" services whose interaction can predict a service's
 general fairness properties. Reliable fairness outcome monitoring would therefore require continuous pairwise
 testing of popular services.
 
 # In a Nutshell
-Prudentia's results show that unfair outcomes are common on the Internet, and that the CCA alone is not always
+Prudentia's results show that unfair outcomes are common on the Internet, and that testing the CCA alone is not always
 sufficient to predict these outcomes. This impresses upon us both the need for an independent fairness watchdog like
 Prudentia, and the necessity of testing services in addition to CCAs.
 Some of Prudentia's findings confirmed long-standing knowledge but showed these behaviors are still deployed in
