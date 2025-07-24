@@ -60,15 +60,16 @@ would require replicating the service in a local testbed, which given their ofte
 error-prone and likely impossible. Alas, is all lost? Will Internet service fairness remain a mystery, divined 
 occasionally by blood sacrifices to questionable mystics?
 
-Not at all! Prudentia retains fidelity by using Google Chrome instances 
+Not at all! Prudentia retains fidelity by using actual Google Chrome instances 
 (fully automated with [Selenium](https://www.selenium.dev/). Don't worry, 
 no interns were imprisoned in our server rooms.) running on commodity
 hardware (2023 M2 [Mac Minis](https://www.youtube.com/watch?v=uDrjeUURSZ4)). We use these to access real Internet services
 using their official browser based clients, exactly like a real user. And to retain control over the bottleneck link,
 the most important component of the network path when it comes to fairness, we
 route all traffic to and from the clients through 
-[BESS](https://github.com/NetSys/bess), a software switch from Berkeley. This lets us enjoy the best of both worlds: realism by accessing deployed
-services just as a user would, and the configurability provided by emulated networks by controlling the bottleneck link.
+[BESS](https://github.com/NetSys/bess), a software switch from Berkeley, set to emulate a lower throughput than typical upstream links.
+This lets us enjoy the best of both worlds: realism by accessing deployed
+services just as a user would, and the configurability of emulated networks by controlling the bottleneck link.
 
 We configure BESS to emulate two distinct link speeds:
 a highly-constrained setting, with a bandwidth of 8 Mbps, and a moderately-constrained
